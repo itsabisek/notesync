@@ -1,0 +1,24 @@
+{
+  "name": "notesync",
+  "version": "1.0.0",
+  "description": "App to keep notes and sync across different devices",
+  "main": "main.js",
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^6.0.11"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itsabisek/notesync.git"
+  },
+  "author": "itsabisek",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/itsabisek/notesync/issues"
+  },
+  "homepage": "https://github.com/itsabisek/notesync#readme"
+}
