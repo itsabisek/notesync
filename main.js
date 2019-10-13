@@ -1,11 +1,17 @@
-  // Modules to control application life and create native browser window
-const {app} = require('electron')
-const Window = require('./Window')
+'use strict'
 
+  // Modules to control application life and create native browser window
+const {app, ipcMain} = require('electron')
+const Window = require('./Window')
+require('electron-reload')(__dirname,{
+  electron: require(`${__dirname}/node_modules/electron`)
+})
+const StorageUtils= require('./StorageUtils')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
+const store = new StorageUtils({name : "Notesync.dat"})
 function createWindow () {
   // Create the browser window.
   mainWindow = new Window({
@@ -26,7 +32,34 @@ function createWindow () {
     // when you should delete the corresponding element.
     mainWindow = null
   })
+
+
+  let addWindow
+
+  mainWindow.once('show', () => {
+    mainWindow.webContents.send('send', store.get_notes())
+  })
+
+  ipcMain.on('add-note', (_event, arg) => {
+    if(!addWindow){
+      addWindow =  new Window({file:'./src/add.html', parent: mainWindow})
+      console.log("New window spawned")
+
+      addWindow.on('closed', () => {
+        addWindow = null
+      })
+    }
+  })
+
+
+  ipcMain.on('added-new-note', (_event,todo) => {
+    const notes = store.add_note(todo).get_notes()
+
+    mainWindow.send('added-note', notes)
+
+})
 }
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -45,6 +78,3 @@ app.on('activate', function () {
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow()
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.

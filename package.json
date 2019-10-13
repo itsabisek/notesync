@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "App to keep notes and sync across different devices",
   "main": "main.js",
-  "dependencies": {},
+  "dependencies": {
+    "electron-reload": "^1.5.0",
+    "electron-store": "^5.0.0"
+  },
   "devDependencies": {
     "electron": "^6.0.11"
   },
