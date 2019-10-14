@@ -15,7 +15,7 @@ class Window extends BrowserWindow{
     super({...default_props, ...windowSettings})
 
     this.loadFile(file)
-    // this.webContents.openDevTools()
+    this.webContents.openDevTools()
 
     this.once('ready-to-show', () => {
       this.show()

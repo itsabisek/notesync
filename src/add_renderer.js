@@ -9,7 +9,8 @@ form.onsubmit = (_event) => {
     const title = form.elements['note-title'].value
     const body = form.elements['note-body'].value
 
-    const form_data = `{${title}:${body}}`
+    const note_data = `{${title}:${body}}`
+    // console.log(`Note details are ${note_data}`)
 
-    ipcRenderer.send('added-new-note', form_data)
+    ipcRenderer.send('added-new-note', note_data)
 }

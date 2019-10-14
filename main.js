@@ -36,14 +36,18 @@ function createWindow () {
 
   let addWindow
 
-  mainWindow.once('show', () => {
-    mainWindow.webContents.send('send', store.get_notes())
+
+  mainWindow.webContents.once('dom-ready', () => {
+    const notes = store.notes
+    console.log(`${notes.length} Notes in store -[ ${store.notes}]`)
+    mainWindow.webContents.send('populate', store.notes)
   })
+
 
   ipcMain.on('add-note', (_event, arg) => {
     if(!addWindow){
       addWindow =  new Window({file:'./src/add.html', parent: mainWindow})
-      console.log("New window spawned")
+      // console.log("New window spawned")
 
       addWindow.on('closed', () => {
         addWindow = null
@@ -52,12 +56,15 @@ function createWindow () {
   })
 
 
-  ipcMain.on('added-new-note', (_event,todo) => {
-    const notes = store.add_note(todo).get_notes()
+  ipcMain.on('added-new-note', (_event,note_data) => {
 
-    mainWindow.send('added-note', notes)
+    const notes = store.add_note(note_data).notes
+    // console.log(`Current notes are  ${notes}`)
 
-})
+    mainWindow.webContents.send('populate', notes)
+
+  })
+
 }
 
 
