@@ -17,10 +17,32 @@ ipcRenderer.on('populate',(_event, notes) => {
   else{
     // console.log(`Current InnerHTML - ${notes_list.innerHTML}`)
     const notes_html = notes.reduce((html,note) => {
-    html += `<div class="note-list-column"><div class="note-list-entry changeable"><h4><b>Note Title</b></h4><hr><p>${note}</p></div></div>`
-    return html
+      html += `<div class="note-list-column">
+                <div class="note-list-entry changeable">
+                  <h4><b>${note.title}</b></h4>
+                  <hr><p>${note.body}</p>
+                  <hr>
+                  <a href="#" id="edit-note-${note.id}">Edit</a>
+                  <a href=# id="delete-note-${note.id}">Delete</a>
+                </div>
+              </div>`
+      return html
     },'')
     notes_list.innerHTML = notes_html + button_html
+
+    notes_list.querySelectorAll('a').forEach((anchor) => {
+      anchor.addEventListener('click', (_event) => {
+        const target_id = _event.target.id.split("-")
+        const event_type = target_id[0]
+        const note_id = parseInt(target_id[target_id.length-1])
+
+        if(event_type == "edit"){
+          ipcRenderer.send('edit-note', note_id)
+        }else{
+          ipcRenderer.send('delete-note', note_id)
+        }
+      })
+    })
   }
 
   document.getElementById('add_note').addEventListener('click', () => {

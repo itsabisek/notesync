@@ -38,8 +38,9 @@ function createWindow () {
 
 
   mainWindow.webContents.once('dom-ready', () => {
-    const notes = store.notes
-    console.log(`${notes.length} Notes in store -[ ${store.notes}]`)
+    console.log("DOM Re Rendered")
+    const notes = store.get_notes().notes
+    // console.log(`${notes.length} Notes in store -[ ${store.notes}]`)
     mainWindow.webContents.send('populate', store.notes)
   })
 
@@ -55,12 +56,22 @@ function createWindow () {
     }
   })
 
+  ipcMain.on('delete-note', (_event, note_id) => {
+    const notes = store.delete_note(note_id).notes
+
+    mainWindow.webContents.send('populate', notes)
+  })
+
+  ipcMain.on('edit-node', (_event, note_id) => {
+    const notes = store.notes
+    mainWindow.webContents.send('populate', notes)
+  })
 
   ipcMain.on('added-new-note', (_event,note_data) => {
 
     const notes = store.add_note(note_data).notes
     // console.log(`Current notes are  ${notes}`)
-
+    addWindow.close()
     mainWindow.webContents.send('populate', notes)
 
   })
